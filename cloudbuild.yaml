@@ -1,2 +1,22 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'us-east4-docker.pkg.dev/$PROJECT_ID/picassome-backend/picassome-backend',
+        '.'
+      ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'us-east4-docker.pkg.dev/$PROJECT_ID/picassome-backend/picassome-backend'
+      ]
+
+images:
+  - 'us-east4-docker.pkg.dev/$PROJECT_ID/picassome-backend/picassome-backend'
+
 options:
-    logging:CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY
