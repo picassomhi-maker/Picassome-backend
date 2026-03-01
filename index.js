@@ -1,12 +1,41 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import Stripe from "stripe";
 
 const app = express();
+const Stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Health check
 app.get("/", (req, res) => {
   res.status(200).send("PicassoMe backend is running ✅");
+});
+// Verify Stripe Checkout payment
+// Usage: GET /verify-payment?session_id=cs_test_...
+app.get("/verify-payment", async (req, res) => {
+  try {
+    const sessionId = req.query.session_id;
+
+    if (!sessionId) {
+      return res.status(400).json({ error: "session_id query parameter is required" });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const paid =
+      session.payment_status === "paid" ||
+      session.status === "complete";
+
+    return res.json({
+      paid,
+      session_id: sessionId,
+      payment_status: session.payment_status,
+      status: session.status,
+    });
+  } catch (err) {
+    console.error("verify-payment error:", err);
+    return res.status(500).json({ error: "Failed to verify payment" });
+  }
 });
 
 // File download endpoint
