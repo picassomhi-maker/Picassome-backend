@@ -4,7 +4,7 @@ import fs from "fs";
 import Stripe from "stripe";
 
 const app = express();
-const Stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Health check
 app.get("/", (req, res) => {
